@@ -15,8 +15,7 @@
       },
       "env": {
         "NODE_ENV": "production"
-      },
-      "config": "android.oqens/app.json"
+      }
     },
     "production": {
       "android": {
