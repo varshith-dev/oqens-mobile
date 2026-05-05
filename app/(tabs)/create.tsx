@@ -24,11 +24,12 @@ export default function CreateScreen() {
   const [description, setDescription] = useState('')
   const [contentUrl, setContentUrl] = useState('')
   const [codeSnippet, setCodeSnippet] = useState('')
+  const [codeLanguage, setCodeLanguage] = useState('javascript')
   const [loading, setLoading] = useState(false)
 
   async function handlePost() {
     if (!user) return router.push('/(auth)/login')
-    if (!title.trim() && !description.trim()) {
+    if (!title.trim() && !description.trim() && !codeSnippet.trim()) {
       Alert.alert('Error', 'Please add some content')
       return
     }
@@ -44,7 +45,10 @@ export default function CreateScreen() {
         is_pinned: false,
       }
       if (type === 'link') payload.content_url = contentUrl.trim()
-      if (type === 'code') payload.code_snippet = codeSnippet.trim()
+      if (type === 'code') {
+        payload.code_snippet = codeSnippet.trim()
+        payload.code_language = codeLanguage
+      }
 
       const res = await rpcQuery({ table: 'posts', action: 'insert', data: payload })
       if (res.data) {
@@ -116,33 +120,31 @@ export default function CreateScreen() {
               textAlignVertical="top"
             />
 
-            {type === 'link' && (
-              <View style={styles.extraField}>
-                <Ionicons name="link-outline" size={18} color={colors.gray500} />
-                <TextInput
-                  style={styles.extraInput}
-                  placeholder="https://..."
-                  placeholderTextColor={colors.gray300}
-                  value={contentUrl}
-                  onChangeText={setContentUrl}
-                  autoCapitalize="none"
-                  keyboardType="url"
-                />
-              </View>
-            )}
-
             {type === 'code' && (
-              <TextInput
-                style={[styles.bodyInput, styles.codeInput]}
-                placeholder="// Paste your code here..."
-                placeholderTextColor={colors.gray300}
-                value={codeSnippet}
-                onChangeText={setCodeSnippet}
-                multiline
-                textAlignVertical="top"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
+              <>
+                <View style={styles.extraField}>
+                  <Ionicons name="code-slash-outline" size={18} color={colors.gray500} />
+                  <TextInput
+                    style={styles.extraInput}
+                    placeholder="Language (e.g., javascript)"
+                    placeholderTextColor={colors.gray300}
+                    value={codeLanguage}
+                    onChangeText={setCodeLanguage}
+                    autoCapitalize="none"
+                  />
+                </View>
+                <TextInput
+                  style={[styles.bodyInput, styles.codeInput]}
+                  placeholder="// Paste your code here..."
+                  placeholderTextColor={colors.gray300}
+                  value={codeSnippet}
+                  onChangeText={setCodeSnippet}
+                  multiline
+                  textAlignVertical="top"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </>
             )}
           </View>
         </ScrollView>
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 16, fontWeight: '700', color: colors.black },
   postBtn: {
     backgroundColor: colors.primary,
-    borderRadius: radius.full,
+    borderRadius: radius.md,
     paddingHorizontal: spacing.md,
     paddingVertical: 8,
     minWidth: 60,
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: spacing.md,
     paddingVertical: 8,
-    borderRadius: radius.full,
+    borderRadius: radius.md,
     borderWidth: 1.5,
     borderColor: colors.border,
   },

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity,
-  Image, ActivityIndicator, KeyboardAvoidingView, Platform, Alert
+  Image, ActivityIndicator, KeyboardAvoidingView, Platform, Alert, Linking
 } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -10,12 +10,22 @@ import { useAuth } from '../../context/AuthContext'
 import { colors, spacing, radius } from '../../lib/theme'
 
 function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 60) return `${mins}m ago`
-  const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs}h ago`
-  return `${Math.floor(hrs / 24)}d ago`
+  if (!dateStr) return ''
+  try {
+    const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
+    if (seconds < 60) return `${seconds}s ago`
+    const mins = Math.floor(seconds / 60)
+    if (mins < 60) return `${mins}m ago`
+    const hrs = Math.floor(mins / 60)
+    if (hrs < 24) return `${hrs}h ago`
+    const days = Math.floor(hrs / 24)
+    if (days < 7) return `${days}d ago`
+    const weeks = Math.floor(days / 7)
+    if (weeks < 5) return `${weeks}w ago`
+    const months = Math.floor(days / 30)
+    if (months < 12) return `${months}mo ago`
+    return `${Math.floor(months / 12)}y ago`
+  } catch { return '' }
 }
 
 export default function PostDetailScreen() {
@@ -42,7 +52,7 @@ export default function PostDetailScreen() {
           table: 'posts', action: 'select',
           select: 'id, user_id, title, description, content_url, code_snippet, type, created_at, profile:profiles!posts_user_id_fkey(id, username, display_name, profile_picture_url, is_verified), post_tags(tags(id, name, slug))',
           filters: [{ type: 'eq', col: 'id', val: id }],
-          single: true,
+          limit: 1,
         }),
         rpcQuery({
           table: 'comments', action: 'select',
@@ -51,7 +61,9 @@ export default function PostDetailScreen() {
           order: { col: 'created_at', ascending: true },
         }),
       ])
-      setPost(postRes.data)
+      // single: true throws 400 — use limit:1 and take first row
+      const postData = Array.isArray(postRes.data) ? postRes.data[0] : postRes.data
+      setPost(postData)
       setComments(commentsRes.data || [])
 
       // Counts
@@ -62,7 +74,7 @@ export default function PostDetailScreen() {
         setCommentCount(parseInt(row.comment_count) || 0)
       }
 
-      // User liked?
+      // User liked? — use limit:1 instead of maybeSingle
       if (user) {
         const likeRes = await rpcQuery({
           table: 'likes', action: 'select', select: 'id',
@@ -70,11 +82,14 @@ export default function PostDetailScreen() {
             { type: 'eq', col: 'post_id', val: id },
             { type: 'eq', col: 'user_id', val: user.id },
           ],
-          maybeSingle: true,
+          limit: 1,
         })
-        setUserLiked(!!likeRes.data)
+        const likeData = Array.isArray(likeRes.data) ? likeRes.data[0] : likeRes.data
+        setUserLiked(!!likeData)
       }
-    } catch {}
+    } catch (e) {
+      console.error('Post load error:', e)
+    }
     finally { setLoading(false) }
   }
 
@@ -197,14 +212,38 @@ export default function PostDetailScreen() {
         {/* Content */}
         {post.title && <Text style={styles.title}>{post.title}</Text>}
         {post.description && <Text style={styles.description}>{post.description}</Text>}
-        {post.content_url && (
-          <View style={styles.linkBox}>
-            <Ionicons name="link-outline" size={16} color={colors.primary} />
-            <Text style={styles.linkText} numberOfLines={2}>{post.content_url}</Text>
+
+        {/* Media images */}
+        {post.content_url && post.type === 'meme' && (
+          <View style={styles.mediaContainer}>
+            {post.content_url.split(',').filter(Boolean).map((url: string, i: number) => (
+              <Image key={i} source={{ uri: url.trim() }} style={styles.mediaImage} resizeMode="contain" />
+            ))}
           </View>
         )}
+
+        {/* Link */}
+        {post.content_url && post.type === 'link' && (
+          <TouchableOpacity
+            style={styles.linkBox}
+            onPress={() => Linking.openURL(post.content_url)}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="link-outline" size={16} color="#3B82F6" />
+            <Text style={styles.linkText} numberOfLines={2}>{post.content_url}</Text>
+            <Ionicons name="open-outline" size={14} color={colors.gray500} />
+          </TouchableOpacity>
+        )}
+
+        {/* Code */}
         {post.code_snippet && (
           <View style={styles.codeBox}>
+            {post.code_language && (
+              <View style={styles.codeHeader}>
+                <Ionicons name="code-slash" size={13} color="#9CA3AF" />
+                <Text style={styles.codeHeaderText}>{post.code_language}</Text>
+              </View>
+            )}
             <Text style={styles.codeText}>{post.code_snippet}</Text>
           </View>
         )}
@@ -298,20 +337,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     marginHorizontal: spacing.md,
-    backgroundColor: colors.gray100,
+    backgroundColor: '#EFF6FF',
     borderRadius: radius.md,
     padding: spacing.md,
     marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
   },
-  linkText: { flex: 1, fontSize: 13, color: colors.primary },
+  linkText: { flex: 1, fontSize: 13, color: '#1D4ED8' },
   codeBox: {
     marginHorizontal: spacing.md,
     backgroundColor: '#1E1E1E',
     borderRadius: radius.md,
-    padding: spacing.md,
     marginBottom: spacing.md,
+    overflow: 'hidden',
   },
-  codeText: { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', fontSize: 13, color: '#D4D4D4', lineHeight: 20 },
+  codeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 8,
+    backgroundColor: '#2D2D2D',
+    borderBottomWidth: 1,
+    borderBottomColor: '#3D3D3D',
+  },
+  codeHeaderText: { fontSize: 11, fontWeight: '600', color: '#9CA3AF', textTransform: 'uppercase' },
+  codeText: { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', fontSize: 13, color: '#D4D4D4', padding: spacing.md, lineHeight: 20 },
+  mediaContainer: { marginHorizontal: spacing.md, marginBottom: spacing.md, gap: spacing.sm },
+  mediaImage: { width: '100%', height: 300, borderRadius: radius.md, backgroundColor: colors.gray100 },
   actions: {
     flexDirection: 'row',
     gap: spacing.xl,

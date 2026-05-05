@@ -79,7 +79,7 @@ export default function HomeScreen() {
       const res = await rpcQuery({
         table: 'posts',
         action: 'select',
-        select: `id, user_id, title, description, content_url, type, created_at, is_pinned,
+        select: `id, user_id, title, description, content_url, code_snippet, code_language, type, created_at, is_pinned,
           profile:profiles!posts_user_id_fkey(id, username, display_name, profile_picture_url, is_verified),
           post_tags(tags(id, name, slug))`,
         filters,

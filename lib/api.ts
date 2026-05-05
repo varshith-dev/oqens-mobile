@@ -1,8 +1,9 @@
 import axios from 'axios'
 import * as SecureStore from 'expo-secure-store'
+import Constants from 'expo-constants'
 
-const API_URL = 'https://api.oqens.me/api'
-const AUTH_KEY = 'The Oqens-auth'
+const API_URL = Constants.expoConfig?.extra?.apiUrl || 'https://api.oqens.me/api'
+const AUTH_KEY = 'oqens_auth_token'
 
 export const apiClient = axios.create({
   baseURL: API_URL,

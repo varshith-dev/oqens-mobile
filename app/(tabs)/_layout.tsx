@@ -8,7 +8,7 @@ function TabIcon({ name, outlineName, focused }: { name: any; outlineName: any; 
     <Ionicons
       name={focused ? name : outlineName}
       size={24}
-      color={focused ? colors.primary : colors.gray500}
+      color={focused ? colors.black : colors.gray500}
     />
   )
 }
@@ -51,10 +51,10 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="notifications"
+        name="flicks"
         options={{
-          title: 'Activity',
-          tabBarIcon: ({ focused }) => <TabIcon name="notifications" outlineName="notifications-outline" focused={focused} />,
+          title: 'Flicks',
+          tabBarIcon: ({ focused }) => <TabIcon name="play-circle" outlineName="play-circle-outline" focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -63,6 +63,11 @@ export default function TabsLayout() {
           title: 'Profile',
           tabBarIcon: ({ focused }) => <TabIcon name="person" outlineName="person-outline" focused={focused} />,
         }}
+      />
+      {/* Hidden from tab bar but still routable */}
+      <Tabs.Screen
+        name="notifications"
+        options={{ href: null }}
       />
     </Tabs>
   )

@@ -59,7 +59,8 @@
       },
       "router": {
         "origin": false
-      }
+      },
+      "apiUrl": "https://api.oqens.me/api"
     },
     "owner": "varshith_code"
   }
