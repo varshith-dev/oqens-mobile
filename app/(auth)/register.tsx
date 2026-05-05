@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native'
 import { useRouter } from 'expo-router'
-import { register } from '../../lib/api'
+import { register, login } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
 import { colors, radius, spacing } from '../../lib/theme'
 
@@ -17,7 +17,7 @@ export default function RegisterScreen() {
 
   async function handleRegister() {
     if (!form.email || !form.password || !form.username || !form.display_name) {
-      Alert.alert('Error', 'Please fill in all fields')
+      Alert.alert('Missing fields', 'Please fill in all fields')
       return
     }
     setLoading(true)
@@ -28,17 +28,30 @@ export default function RegisterScreen() {
         username: form.username.trim().toLowerCase(),
         display_name: form.display_name.trim(),
       })
-      if (res?.session?.accessToken) {
-        await signIn(res.session)
+      if (res?.status === 'success') {
+        const loginRes = await login(form.email.trim().toLowerCase(), form.password)
+        if (loginRes?.session?.accessToken) {
+          await signIn(loginRes.session)
+        } else {
+          router.replace('/(auth)/login')
+        }
       } else {
-        Alert.alert('Error', res?.error?.message || 'Registration failed')
+        Alert.alert('Registration failed', res?.message || res?.error?.message || 'Please try again')
       }
     } catch (e: any) {
-      Alert.alert('Error', e?.response?.data?.error?.message || 'Registration failed')
+      const msg = e?.response?.data?.message || e?.response?.data?.error?.message || e?.message || 'Registration failed'
+      Alert.alert('Registration failed', msg)
     } finally {
       setLoading(false)
     }
   }
+
+  const fields = [
+    { key: 'display_name', label: 'Full Name', placeholder: 'John Doe', auto: 'name' as const },
+    { key: 'username', label: 'Username', placeholder: 'johndoe', auto: 'username' as const },
+    { key: 'email', label: 'Email', placeholder: 'you@example.com', auto: 'email' as const, keyboard: 'email-address' as const },
+    { key: 'password', label: 'Password', placeholder: '••••••••', secure: true, auto: 'password' as const },
+  ]
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -51,12 +64,7 @@ export default function RegisterScreen() {
         <Text style={styles.sub}>Join the developer community</Text>
 
         <View style={styles.form}>
-          {[
-            { key: 'display_name', label: 'Full Name', placeholder: 'John Doe', auto: 'name' as const },
-            { key: 'username', label: 'Username', placeholder: 'johndoe', auto: 'username' as const },
-            { key: 'email', label: 'Email', placeholder: 'you@example.com', auto: 'email' as const, keyboard: 'email-address' as const },
-            { key: 'password', label: 'Password', placeholder: '••••••••', secure: true, auto: 'password' as const },
-          ].map(f => (
+          {fields.map(f => (
             <View key={f.key} style={styles.field}>
               <Text style={styles.label}>{f.label}</Text>
               <TextInput
@@ -74,7 +82,7 @@ export default function RegisterScreen() {
           ))}
 
           <TouchableOpacity
-            style={[styles.btnPrimary, loading && { opacity: 0.7 }]}
+            style={[styles.btnPrimary, loading && { opacity: 0.6 }]}
             onPress={handleRegister}
             disabled={loading}
             activeOpacity={0.85}
@@ -87,7 +95,9 @@ export default function RegisterScreen() {
         </View>
 
         <TouchableOpacity onPress={() => router.push('/(auth)/login')} style={styles.switchWrap}>
-          <Text style={styles.switchText}>Already have an account? <Text style={{ color: colors.primary, fontWeight: '700' }}>Sign in</Text></Text>
+          <Text style={styles.switchText}>
+            Have an account? <Text style={styles.switchLink}>Sign in</Text>
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -95,32 +105,33 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: colors.white, padding: spacing.xl, paddingTop: 60 },
+  container: { flexGrow: 1, backgroundColor: colors.cream, padding: spacing.xl, paddingTop: 60 },
   back: { marginBottom: spacing.xl },
-  backText: { color: colors.primary, fontSize: 15, fontWeight: '600' },
-  title: { fontSize: 28, fontWeight: '800', color: colors.black, marginBottom: spacing.xs },
+  backText: { color: colors.gray700, fontSize: 14, fontWeight: '600' },
+  title: { fontSize: 32, fontWeight: '800', color: colors.black, marginBottom: spacing.xs, letterSpacing: -0.5 },
   sub: { fontSize: 15, color: colors.gray500, marginBottom: spacing.xl * 1.5 },
   form: { gap: spacing.md },
-  field: { gap: spacing.xs },
-  label: { fontSize: 13, fontWeight: '600', color: colors.gray700 },
+  field: { gap: 6 },
+  label: { fontSize: 12, fontWeight: '700', color: colors.gray700, letterSpacing: 0.5, textTransform: 'uppercase' },
   input: {
     borderWidth: 1.5,
     borderColor: colors.border,
     borderRadius: radius.md,
     paddingHorizontal: spacing.md,
-    paddingVertical: 14,
+    paddingVertical: 15,
     fontSize: 15,
     color: colors.black,
-    backgroundColor: colors.gray100,
+    backgroundColor: colors.white,
   },
   btnPrimary: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.black,
     borderRadius: radius.full,
-    paddingVertical: 16,
+    paddingVertical: 17,
     alignItems: 'center',
     marginTop: spacing.sm,
   },
-  btnText: { color: colors.white, fontSize: 16, fontWeight: '700' },
+  btnText: { color: colors.white, fontSize: 15, fontWeight: '700' },
   switchWrap: { marginTop: spacing.xl, alignItems: 'center' },
   switchText: { fontSize: 14, color: colors.gray500 },
+  switchLink: { color: colors.black, fontWeight: '700' },
 })

@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   username: { fontSize: 12, color: colors.gray500, marginTop: 1 },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: spacing.sm },
   tag: { backgroundColor: colors.primaryLight, borderRadius: radius.full, paddingHorizontal: 10, paddingVertical: 3 },
-  tagText: { fontSize: 12, color: colors.primary, fontWeight: '500' },
+  tagText: { fontSize: 12, color: colors.gray700, fontWeight: '500' },
   title: { fontSize: 16, fontWeight: '700', color: colors.black, marginBottom: 4, lineHeight: 22 },
   description: { fontSize: 14, color: colors.gray700, lineHeight: 20, marginBottom: spacing.sm },
   linkPreview: {

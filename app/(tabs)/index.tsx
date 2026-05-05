@@ -226,7 +226,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.white },
+  container: { flex: 1, backgroundColor: colors.cream },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -246,9 +246,9 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   tab: { paddingVertical: 12, paddingHorizontal: spacing.md, marginRight: 4 },
-  tabActive: { borderBottomWidth: 2, borderBottomColor: colors.primary },
+  tabActive: { borderBottomWidth: 2, borderBottomColor: colors.black },
   tabText: { fontSize: 14, fontWeight: '500', color: colors.gray500 },
-  tabTextActive: { color: colors.primary, fontWeight: '700' },
+  tabTextActive: { color: colors.black, fontWeight: '700' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
   emptyText: { color: colors.gray500, fontSize: 15 },
   fab: {
@@ -258,13 +258,13 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.black,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 6,
   },
 })

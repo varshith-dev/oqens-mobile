@@ -1,29 +1,30 @@
 export const colors = {
-  primary: '#6C63FF',
-  primaryLight: '#EEF0FF',
-  black: '#0A0A0A',
+  // Core palette — cream, white, black
+  primary: '#1A1A1A',        // near-black — buttons, active states
+  primaryLight: '#F5F0E8',   // warm cream — backgrounds, chips
+  accent: '#C8A96E',         // warm gold — subtle highlights
+  
+  black: '#0D0D0D',
   gray900: '#1A1A1A',
-  gray700: '#4A4A4A',
-  gray500: '#8A8A8A',
-  gray300: '#D0D0D0',
-  gray100: '#F5F5F5',
+  gray700: '#3D3D3D',
+  gray500: '#7A7A7A',
+  gray300: '#C4C4C4',
+  gray100: '#F7F4EF',        // warm off-white
+  
   white: '#FFFFFF',
-  border: '#EBEBEB',
-  danger: '#FF3B30',
-  success: '#34C759',
-  warning: '#FF9500',
-}
-
-export const fonts = {
-  regular: 'System',
-  medium: 'System',
-  bold: 'System',
+  cream: '#FAF7F2',          // page background
+  creamDark: '#F0EBE1',      // card borders, dividers
+  
+  border: '#E8E2D9',
+  danger: '#C0392B',
+  success: '#27AE60',
+  warning: '#E67E22',
 }
 
 export const radius = {
-  sm: 8,
+  sm: 6,
   md: 12,
-  lg: 16,
+  lg: 18,
   xl: 24,
   full: 999,
 }

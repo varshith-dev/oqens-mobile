@@ -14,7 +14,7 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     if (!email.trim() || !password.trim()) {
-      Alert.alert('Error', 'Please fill in all fields')
+      Alert.alert('Missing fields', 'Please fill in all fields')
       return
     }
     setLoading(true)
@@ -23,10 +23,11 @@ export default function LoginScreen() {
       if (res?.session?.accessToken) {
         await signIn(res.session)
       } else {
-        Alert.alert('Error', res?.error?.message || 'Login failed')
+        Alert.alert('Sign in failed', res?.message || res?.error?.message || 'Please check your credentials')
       }
     } catch (e: any) {
-      Alert.alert('Error', e?.response?.data?.error?.message || 'Login failed')
+      const msg = e?.response?.data?.message || e?.response?.data?.error?.message || e?.message || 'Sign in failed'
+      Alert.alert('Sign in failed', msg)
     } finally {
       setLoading(false)
     }
@@ -39,8 +40,8 @@ export default function LoginScreen() {
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>Welcome back</Text>
-        <Text style={styles.sub}>Sign in to your OQENS account</Text>
+        <Text style={styles.title}>Sign in</Text>
+        <Text style={styles.sub}>Welcome back to OQENS</Text>
 
         <View style={styles.form}>
           <View style={styles.field}>
@@ -71,7 +72,7 @@ export default function LoginScreen() {
           </View>
 
           <TouchableOpacity
-            style={[styles.btnPrimary, loading && { opacity: 0.7 }]}
+            style={[styles.btnPrimary, loading && { opacity: 0.6 }]}
             onPress={handleLogin}
             disabled={loading}
             activeOpacity={0.85}
@@ -84,7 +85,9 @@ export default function LoginScreen() {
         </View>
 
         <TouchableOpacity onPress={() => router.push('/(auth)/register')} style={styles.switchWrap}>
-          <Text style={styles.switchText}>Don't have an account? <Text style={{ color: colors.primary, fontWeight: '700' }}>Sign up</Text></Text>
+          <Text style={styles.switchText}>
+            No account? <Text style={styles.switchLink}>Create one</Text>
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -92,32 +95,33 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: colors.white, padding: spacing.xl, paddingTop: 60 },
+  container: { flexGrow: 1, backgroundColor: colors.cream, padding: spacing.xl, paddingTop: 60 },
   back: { marginBottom: spacing.xl },
-  backText: { color: colors.primary, fontSize: 15, fontWeight: '600' },
-  title: { fontSize: 28, fontWeight: '800', color: colors.black, marginBottom: spacing.xs },
+  backText: { color: colors.gray700, fontSize: 14, fontWeight: '600' },
+  title: { fontSize: 32, fontWeight: '800', color: colors.black, marginBottom: spacing.xs, letterSpacing: -0.5 },
   sub: { fontSize: 15, color: colors.gray500, marginBottom: spacing.xl * 1.5 },
   form: { gap: spacing.md },
-  field: { gap: spacing.xs },
-  label: { fontSize: 13, fontWeight: '600', color: colors.gray700 },
+  field: { gap: 6 },
+  label: { fontSize: 12, fontWeight: '700', color: colors.gray700, letterSpacing: 0.5, textTransform: 'uppercase' },
   input: {
     borderWidth: 1.5,
     borderColor: colors.border,
     borderRadius: radius.md,
     paddingHorizontal: spacing.md,
-    paddingVertical: 14,
+    paddingVertical: 15,
     fontSize: 15,
     color: colors.black,
-    backgroundColor: colors.gray100,
+    backgroundColor: colors.white,
   },
   btnPrimary: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.black,
     borderRadius: radius.full,
-    paddingVertical: 16,
+    paddingVertical: 17,
     alignItems: 'center',
     marginTop: spacing.sm,
   },
-  btnText: { color: colors.white, fontSize: 16, fontWeight: '700' },
+  btnText: { color: colors.white, fontSize: 15, fontWeight: '700' },
   switchWrap: { marginTop: spacing.xl, alignItems: 'center' },
   switchText: { fontSize: 14, color: colors.gray500 },
+  switchLink: { color: colors.black, fontWeight: '700' },
 })
