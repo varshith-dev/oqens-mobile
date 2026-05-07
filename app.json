@@ -1,4 +1,4 @@
-{
+﻿{
   "expo": {
     "name": "OQENS",
     "slug": "oqens",
@@ -22,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.oqens.me",
-      "versionCode": 7,
+      "versionCode": 10,
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",
@@ -72,3 +72,4 @@
     "owner": "varshith_code"
   }
 }
+
