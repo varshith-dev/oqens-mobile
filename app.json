@@ -4,11 +4,11 @@
     "slug": "oqens",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/OQENS-ANDROID-ICON.png",
+    "icon": "./assets/icon.png",
     "scheme": "oqens",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/OQENS-ANDROID-ICON.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/OQENS-ANDROID-ICON.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "me.oqens.app",
@@ -35,7 +35,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/OQENS-ANDROID-ICON.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       "expo-router",
@@ -43,7 +43,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/OQENS-ANDROID-ICON.png",
+          "icon": "./assets/icon.png",
           "color": "#000000"
         }
       ],

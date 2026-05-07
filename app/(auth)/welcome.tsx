@@ -12,7 +12,7 @@ export default function WelcomeScreen() {
 
       <View style={styles.content}>
         <Image
-          source={require('../../assets/OQENS-ANDROID-ICON.png')}
+          source={require('../../assets/icon.png')}
           style={styles.logo}
           resizeMode="contain"
         />
