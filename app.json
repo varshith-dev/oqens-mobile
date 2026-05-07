@@ -14,19 +14,16 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "me.oqens.app"
+      "bundleIdentifier": "com.oqens.me"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "me.oqens.app",
-      "versionCode": 2,
+      "package": "com.oqens.me",
+      "versionCode": 3,
       "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",
         "POST_NOTIFICATIONS"
