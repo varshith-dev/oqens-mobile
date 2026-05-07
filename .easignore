@@ -1,16 +1,6 @@
-# Ignore everything from the parent repo that gets picked up
-../src
-../api
-../api.oqens
-../Database
-../legacy
-../dist
-../node_modules
-../.git
-../package.json
-../package-lock.json
-../vite.config.js
-../tailwind.config.js
-../postcss.config.js
-../index.html
-../capacitor.config.ts
+# Ignore build artifacts and dev files
+node_modules
+.expo
+.git
+*.log
+build_log.txt

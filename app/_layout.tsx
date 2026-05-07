@@ -39,10 +39,6 @@ function RootLayoutNav() {
         name="profile/[username]"
         options={{ headerShown: true, title: '', headerBackTitle: 'Back', headerTintColor: '#6C63FF' }}
       />
-      <Stack.Screen
-        name="(tabs)/settings"
-        options={{ headerShown: false }}
-      />
     </Stack>
   )
 }
