@@ -230,7 +230,6 @@ const styles = StyleSheet.create({
   resultName: { fontSize: 15, fontWeight: '600', color: colors.black },
   resultSub: { fontSize: 13, color: colors.gray500, marginTop: 2 },
   typeBadge: { backgroundColor: colors.primaryLight, borderRadius: radius.full, paddingHorizontal: 10, paddingVertical: 4 },
-  typeBadgeText: { fontSize: 11, fontWeight: '600', color: colors.primary },
-  empty: { padding: spacing.xl, alignItems: 'center' },
+  typeBadgeText: { fontSize: 11, fontWeight: '600', color: colors.primary },  empty: { padding: spacing.xl, alignItems: 'center' },
   emptyText: { color: colors.gray500, fontSize: 15 },
 })

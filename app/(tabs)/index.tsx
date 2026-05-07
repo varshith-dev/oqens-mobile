@@ -159,9 +159,6 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Text style={styles.logo}>OQENS</Text>
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => router.push('/explore')} style={styles.iconBtn}>
-            <Ionicons name="search-outline" size={22} color={colors.black} />
-          </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/(tabs)/notifications')} style={styles.iconBtn}>
             <Ionicons name="notifications-outline" size={22} color={colors.black} />
           </TouchableOpacity>
@@ -236,19 +233,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  logo: { fontSize: 20, fontWeight: '900', color: colors.black, letterSpacing: 1 },
-  headerRight: { flexDirection: 'row', gap: spacing.sm },
-  iconBtn: { padding: 4 },
+  logo: { fontSize: 22, fontWeight: '900', color: colors.black, letterSpacing: 1.5 },
+  headerRight: { flexDirection: 'row', gap: spacing.xs },
+  iconBtn: { padding: 6 },
   tabs: {
     flexDirection: 'row',
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
+    backgroundColor: colors.white,
   },
-  tab: { paddingVertical: 12, paddingHorizontal: spacing.md, marginRight: 4 },
-  tabActive: { borderBottomWidth: 2, borderBottomColor: colors.black },
+  tab: { paddingVertical: 12, paddingHorizontal: spacing.md },
+  tabActive: { borderBottomWidth: 2, borderBottomColor: colors.primary },
   tabText: { fontSize: 14, fontWeight: '500', color: colors.gray500 },
-  tabTextActive: { color: colors.black, fontWeight: '700' },
+  tabTextActive: { color: colors.primary, fontWeight: '700' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
   emptyText: { color: colors.gray500, fontSize: 15 },
   fab: {
@@ -258,13 +256,13 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: colors.black,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
     elevation: 6,
   },
 })

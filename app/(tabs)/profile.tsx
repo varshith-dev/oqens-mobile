@@ -128,7 +128,7 @@ export default function ProfileScreen() {
 
   async function loadProfile() {
     try {
-      const [profileRes, postsRes] = await Promise.all([
+      const [profileRes, postsRes, followerRes, followingRes] = await Promise.all([
         rpcQuery({
           table: 'profiles', action: 'select',
           select: 'id, username, display_name, profile_picture_url, banner_image_url, bio, is_verified, role, follower_count, following_count, special_badge_config',
@@ -145,12 +145,33 @@ export default function ProfileScreen() {
           order: { col: 'created_at', ascending: false },
           limit: 20,
         }),
+        // Live follower count from follows table
+        rpcQuery({
+          table: 'follows', action: 'select',
+          select: 'id',
+          filters: [{ type: 'eq', col: 'following_id', val: user!.id }],
+          limit: 1000,
+        }),
+        // Live following count from follows table
+        rpcQuery({
+          table: 'follows', action: 'select',
+          select: 'id',
+          filters: [{ type: 'eq', col: 'follower_id', val: user!.id }],
+          limit: 1000,
+        }),
       ])
       const p = Array.isArray(profileRes.data) ? profileRes.data[0] : profileRes.data
-      setProfile(p || {
-        id: user!.id, username: user!.username, display_name: user!.display_name,
-        profile_picture_url: user!.profile_picture_url, is_verified: user!.is_verified,
-        role: user!.role, follower_count: 0, following_count: 0,
+      const liveFollowers = (followerRes.data || []).length
+      const liveFollowing = (followingRes.data || []).length
+      setProfile({
+        ...(p || {
+          id: user!.id, username: user!.username, display_name: user!.display_name,
+          profile_picture_url: user!.profile_picture_url, is_verified: user!.is_verified,
+          role: user!.role,
+        }),
+        // Use live count — always accurate
+        follower_count: liveFollowers,
+        following_count: liveFollowing,
       })
       setPosts(postsRes.data || [])
     } catch (e) {
@@ -217,7 +238,7 @@ export default function ProfileScreen() {
 
         <View style={styles.stats}>
           <View style={styles.stat}>
-            <Text style={styles.statValue}>{posts.length}</Text>
+            <Text style={styles.statValue}>{profile?.post_count ?? posts.length}</Text>
             <Text style={styles.statLabel}>Posts</Text>
           </View>
           <TouchableOpacity
@@ -248,9 +269,14 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity onPress={handleSignOut} style={styles.iconBtn}>
-          <Ionicons name="log-out-outline" size={22} color={colors.gray700} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', gap: 4 }}>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/notifications')} style={styles.iconBtn}>
+            <Ionicons name="notifications-outline" size={22} color={colors.gray700} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/settings' as any)} style={styles.iconBtn}>
+            <Ionicons name="settings-outline" size={22} color={colors.gray700} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <FlatList
@@ -309,8 +335,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, borderColor: colors.border,
     borderRadius: radius.full, paddingHorizontal: spacing.md, paddingVertical: 8,
   },
-  editBtnText: { fontSize: 13, fontWeight: '600', color: colors.black },
-  nameRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm },
+  editBtnText: { fontSize: 13, fontWeight: '600', color: colors.black },  nameRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm },
   displayName: { fontSize: 20, fontWeight: '800', color: colors.black },
   username: { fontSize: 14, color: colors.gray500, marginTop: 2 },
   bio: { fontSize: 14, color: colors.gray700, marginTop: spacing.sm, lineHeight: 20 },

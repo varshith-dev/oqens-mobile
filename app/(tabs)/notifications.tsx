@@ -17,10 +17,10 @@ function timeAgo(dateStr: string): string {
 }
 
 const ICONS: Record<string, { name: any; color: string }> = {
-  like: { name: 'heart', color: '#FF3B30' },
-  comment: { name: 'chatbubble', color: colors.primary },
-  follow: { name: 'person-add', color: colors.success },
-  mention: { name: 'at', color: colors.warning },
+  like:    { name: 'heart',       color: '#EF4444' },
+  comment: { name: 'chatbubble',  color: colors.primary },
+  follow:  { name: 'person-add', color: colors.success },
+  mention: { name: 'at',          color: colors.warning },
 }
 
 export default function NotificationsScreen() {
@@ -144,12 +144,11 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
     gap: spacing.md,
   },
-  rowUnread: { backgroundColor: '#F8F7FF' },
+  rowUnread: { backgroundColor: '#F0F1FF' },
   avatarWrap: { position: 'relative' },
   avatar: { width: 44, height: 44, borderRadius: 22 },
   avatarFallback: { backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
-  avatarLetter: { fontSize: 18, fontWeight: '700', color: colors.primary },
-  iconBadge: {
+  avatarLetter: { fontSize: 18, fontWeight: '700', color: colors.primary },  iconBadge: {
     position: 'absolute',
     bottom: -2,
     right: -2,
