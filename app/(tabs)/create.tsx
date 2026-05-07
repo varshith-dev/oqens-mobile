@@ -2,12 +2,11 @@ import { useState, useCallback, useRef } from 'react'
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   ScrollView, KeyboardAvoidingView, Platform, Alert,
-  ActivityIndicator, Image, FlatList,
+  ActivityIndicator, Image,
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import * as ImagePicker from 'expo-image-picker'
 import { rpcQuery } from '../../lib/api'
 import { useAuth } from '../../context/AuthContext'
 import { colors, spacing, radius } from '../../lib/theme'
@@ -89,31 +88,28 @@ export default function CreateScreen() {
   const [loading, setLoading] = useState(false)
   const [savingDraft, setSavingDraft] = useState(false)
 
-  // ── Media picker ────────────────────────────────────────────────────────────
-  async function pickMedia() {
-    if (media.length >= 5) {
-      Alert.alert('Limit reached', 'You can attach up to 5 files')
-      return
-    }
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (status !== 'granted') {
-      Alert.alert('Permission needed', 'Allow media access to attach files')
-      return
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsMultipleSelection: true,
-      quality: 0.85,
-      selectionLimit: 5 - media.length,
-    })
-    if (!result.canceled) {
-      const newFiles: MediaFile[] = result.assets.map(a => ({
-        uri: a.uri,
-        type: a.type === 'video' ? 'video/mp4' : 'image/jpeg',
-        name: a.fileName || `media_${Date.now()}`,
-      }))
-      setMedia(prev => [...prev, ...newFiles].slice(0, 5))
-    }
+  const [mediaUrlInput, setMediaUrlInput] = useState('')
+
+  // ── Media input — paste URL ─────────────────────────────────────────────────
+  function addMediaUrl() {
+    const url = mediaUrlInput.trim()
+    if (!url) return
+    if (media.length >= 5) { Alert.alert('Limit reached', 'Max 5 files'); return }
+    const isVideo = /\.(mp4|webm|mov|mkv)$/i.test(url)
+    setMedia(prev => [...prev, {
+      uri: url,
+      type: isVideo ? 'video/mp4' : 'image/jpeg',
+      name: url.split('/').pop() || `media_${Date.now()}`,
+    }].slice(0, 5))
+    setMediaUrlInput('')
+  }
+
+  function pickMedia() {
+    Alert.alert(
+      'Add Media',
+      'Paste a direct URL to an image or video',
+      [{ text: 'OK' }]
+    )
   }
 
   // ── Tag input ───────────────────────────────────────────────────────────────
@@ -297,13 +293,30 @@ export default function CreateScreen() {
                       onRemove={() => setMedia(prev => prev.filter((_, idx) => idx !== i))}
                     />
                   ))}
-                  {media.length < 5 && (
-                    <TouchableOpacity style={styles.addMediaBtn} onPress={pickMedia} activeOpacity={0.7}>
-                      <Ionicons name="add" size={28} color={colors.gray500} />
-                      <Text style={styles.addMediaText}>{media.length === 0 ? 'Add media' : 'Add more'}</Text>
-                    </TouchableOpacity>
-                  )}
                 </View>
+                {media.length < 5 && (
+                  <View style={styles.tagInputRow}>
+                    <TextInput
+                      style={styles.tagInput}
+                      placeholder="Paste image/video URL..."
+                      placeholderTextColor={colors.gray300}
+                      value={mediaUrlInput}
+                      onChangeText={setMediaUrlInput}
+                      autoCapitalize="none"
+                      keyboardType="url"
+                      returnKeyType="done"
+                      onSubmitEditing={addMediaUrl}
+                    />
+                    <TouchableOpacity
+                      style={[styles.tagAddBtn, !mediaUrlInput.trim() && { opacity: 0.4 }]}
+                      onPress={addMediaUrl}
+                      disabled={!mediaUrlInput.trim()}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons name="add" size={18} color={colors.primary} />
+                    </TouchableOpacity>
+                  </View>
+                )}
                 {media.length > 0 && (
                   <Text style={styles.mediaHint}>{media.length}/5 files attached</Text>
                 )}
