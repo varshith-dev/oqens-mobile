@@ -22,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.oqens.me",
-      "versionCode": 3,
+      "versionCode": 4,
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",
