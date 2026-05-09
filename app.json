@@ -90,10 +90,8 @@
       "typedRoutes": true
     },
     "extra": {
-      "oneSignalAppId": "YOUR_ONESIGNAL_APP_ID_HERE",
-      "eas": {
-        "projectId": "YOUR_EAS_PROJECT_ID_HERE"
-      }
+      "oneSignalAppId": "cb4fd7ab-5191-44a1-a372-da8cb5999e45",
+      "eas": { "projectId": "8ae84c00-d2e9-4de9-8e4f-73669eb5e3dc" }
     }
   }
 }

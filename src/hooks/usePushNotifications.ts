@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { OneSignal, LogLevel } from 'react-native-onesignal'
 import Constants from 'expo-constants'
 import { useNotifStore } from '../store/useNotifStore'
 import { usersApi } from '../api/users'
 
 const ONESIGNAL_APP_ID =
-  Constants.expoConfig?.extra?.oneSignalAppId ?? 'YOUR_ONESIGNAL_APP_ID_HERE'
+  Constants.expoConfig?.extra?.oneSignalAppId ?? 'cb4fd7ab-5191-44a1-a372-da8cb5999e45'
 
 export function usePushNotifications() {
   const incrementUnread = useNotifStore(s => s.incrementUnread)
@@ -22,9 +22,9 @@ export function usePushNotifications() {
     // Request permission (Android 13+ requires this)
     OneSignal.Notifications.requestPermission(true)
 
-    // Foreground notification received — show in-app toast, increment badge
+    // Foreground notification received â€” show in-app toast, increment badge
     OneSignal.Notifications.addEventListener('foregroundWillDisplay', (event) => {
-      // Prevent OS notification while app is open — we handle it in-app
+      // Prevent OS notification while app is open â€” we handle it in-app
       event.preventDefault()
       incrementUnread()
       // The notification data is available at event.notification.additionalData
@@ -56,3 +56,4 @@ export function usePushNotifications() {
     }
   }, [])
 }
+
