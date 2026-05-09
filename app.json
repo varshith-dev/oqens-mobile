@@ -26,11 +26,11 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.oqens.me",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 1,
       "compileSdkVersion": 35,
       "targetSdkVersion": 35,
       "minSdkVersion": 24,
-      "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.CAMERA",
