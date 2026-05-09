@@ -1,0 +1,10 @@
+export const API_BASE_URL = 'https://api.oqens.me/api'
+export const APP_SCHEME = 'oqens'
+export const APP_DOMAIN = 'oqens.app'
+export const SECURE_STORE_TOKEN_KEY = 'oqens_auth_token'
+export const SECURE_STORE_USER_KEY = 'oqens_auth_user'
+export const ASYNC_STORAGE_DRAFTS_KEY = 'oqens_drafts'
+export const ASYNC_STORAGE_RECENT_SEARCHES_KEY = 'oqens_recent_searches'
+export const FEED_PAGE_SIZE = 20
+export const STORY_DURATION_MS = 5000
+export const PUSH_TOKEN_ENDPOINT = '/users/me/push-token'

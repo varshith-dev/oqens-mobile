@@ -1,6 +1,0 @@
-# Ignore build artifacts and dev files
-node_modules
-.expo
-.git
-*.log
-build_log.txt
