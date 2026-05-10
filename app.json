@@ -2,7 +2,7 @@
     "expo":  {
                  "name":  "OQENS",
                  "slug":  "oqens",
-                 "version":  "1.0.0",
+                 "version":  "2.5.7",
                  "sdkVersion":  "52.0.0",
                  "orientation":  "portrait",
                  "icon":  "./assets/icon.png",
@@ -29,7 +29,7 @@
                                                   },
                                  "package":  "com.oqens.me",
                                  "googleServicesFile":  "./google-services.json",
-                                 "versionCode":  12,
+                                 "versionCode":  13,
                                  "permissions":  [
                                                      "android.permission.INTERNET",
                                                      "android.permission.CAMERA",
