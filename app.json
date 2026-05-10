@@ -1,4 +1,4 @@
-﻿{
+{
   "expo": {
     "name": "OQENS",
     "slug": "oqens",
@@ -28,9 +28,6 @@
       "package": "com.oqens.me",
       "googleServicesFile": "./google-services.json",
       "versionCode": 1,
-      "compileSdkVersion": 35,
-      "targetSdkVersion": 35,
-      "minSdkVersion": 24,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.CAMERA",
